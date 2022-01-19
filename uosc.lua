@@ -268,6 +268,8 @@ local options = {
 	color_foreground_text = '000000',
 	color_background = '000000',
 	color_background_text = 'ffffff',
+	color_selected = 'f7a27a',
+	color_selected_text = '000000',
 	total_time = false,
 	font_bold = false,
 	autohide = false,
@@ -1345,6 +1347,7 @@ function update_display_dimensions()
 	-- Some elements probably changed their rectangles as a reaction to `display_change`
 	update_proximities()
 	request_render()
+	handle_mouse_leave()
 end
 
 function update_element_cursor_proximity(element)
@@ -2040,8 +2043,8 @@ function render_menu(this)
 		-- Selected highlight
 		if this.selected_item == index then
 			ass:new_event()
-			ass:append('{\\blur0\\bord0\\1c&H'..options.color_foreground..item_clip..'}')
-			ass:append(ass_opacity(0.1, this.opacity))
+			ass:append('{\\blur0\\bord0\\1c&H'..options.color_selected..item_clip..'}')
+			ass:append(ass_opacity(0.5, this.opacity))
 			ass:pos(0, 0)
 			ass:draw_start()
 			ass:rect_cw(this.ax, item_ay, this.bx, item_by)
@@ -3173,7 +3176,7 @@ mp.add_key_binding(nil, 'load-subtitles', function()
 	if menu:is_open('load-subtitles') then menu:close() return end
 
 	local path = mp.get_property_native('path')
-	if path and is_protocol(path) then
+	if is_protocol(path) then
 		path='$HOME'
 	end
 	open_file_navigation_menu(
